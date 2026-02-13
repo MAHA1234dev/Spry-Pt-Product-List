@@ -1,0 +1,29 @@
+.filters-wrapper {
+    position: sticky;
+   top: 64px;
+    background-color: #fff;
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    /* border-bottom: 1px solid #ddd; */
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.products-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #ffffff;
+    padding: 10px 0px;
+    margin-bottom: 12px;
+    /* border-bottom: 1px solid #e0e0e0; */
+}
+
+.products-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+     color: #9c27b0; 
+}

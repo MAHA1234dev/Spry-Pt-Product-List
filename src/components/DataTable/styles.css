@@ -1,0 +1,7 @@
+.table-header {
+    font-size: 1.5rem;        /* make it bigger */
+    font-weight: 600;          /* bold */
+    margin: 20px 0 10px 0;     /* top, right, bottom, left spacing */
+    padding-left: 10px;        /* optional extra padding */
+    color: #9c27b0;            /* optional color */
+}
