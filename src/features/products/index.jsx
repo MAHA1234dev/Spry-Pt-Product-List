@@ -4,7 +4,6 @@ import DataTable from "../../components/DataTable";
 import { Rating, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { Box } from "@mui/material";
 import InputField from "../../components/TextField";
 import "./styles.css";
 import CustomButton from "../../components/CustomButton";
@@ -13,26 +12,25 @@ import { filters, ProductColumns } from "../../Constants";
 
 function Products() {
 
-    const [products, setProducts] = useState({});
-    const [selectedValues, sertSelectedValues] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [selectedValues, setSelectedValues] = useState({});
     const [filteredProducts, setFilteredProducts] = useState([]);
 
-    const toggleFavorite = (id) => {
+    const toggleFavorite = useCallback((id) => {
         setProducts((prev) => {
-            const updatedProducts = prev.products.map((product) =>
-                product.id === id
-                    ? { ...product, isFavorite: !product.isFavorite }
-                    : product
+            const updatedProducts = prev.map((product) =>
+                product.id === id ? { ...product, isFavorite: !product.isFavorite } : product
             );
-
             const favoriteIds = updatedProducts.filter((p) => p.isFavorite).map((p) => p.id);
             setFavorites(favoriteIds);
-            return {
-                ...prev,
-                products: updatedProducts,
-            };
+            return updatedProducts;
         });
-    };
+        setFilteredProducts((prev) =>
+            prev.map((product) =>
+                product.id === id ? { ...product, isFavorite: !product.isFavorite } : product
+            )
+        );
+    }, []);
 
     const renderers = useMemo(() => ({
         image: (params) => (
@@ -63,7 +61,7 @@ function Products() {
                     toggleFavorite(params.row.id);
                 }}
             >
-                {params.row.isFavorite ? (
+                {params?.row?.isFavorite ? (
                     <FavoriteIcon color="error" fontSize="small" />
                 ) : (
                     <FavoriteBorderIcon fontSize="small" />
@@ -86,7 +84,7 @@ function Products() {
     }, [])
 
     const getProducts = async () => {
-        const favorite = getFavorites();
+        const favorite = getFavorites() ?? [];
         await api.get('/products').then((res) => {
             const data = res.data.products.map((p) => ({
                 ...p,
@@ -100,17 +98,8 @@ function Products() {
     };
 
     const handleChange = (type, field, e) => {
-        sertSelectedValues(prev => {
-            const newFilterData = { ...prev };
-            switch (type) {
-                case 'textField':
-                    newFilterData[field] = e.target.value;
-                    break;
-                default:
-                    break;
-            }
-            return newFilterData;
-        });
+        if (type !== "textField") return;
+        setSelectedValues((prev) => ({ ...prev, [field]: e.target.value }));
     }
 
     const handleApply = () => {
@@ -155,7 +144,6 @@ function Products() {
             <DataTable
                 rows={filteredProducts}
                 columns={columns}
-                // headerName={"Product List"}
                 pageSize={25}
             />
         </div>
